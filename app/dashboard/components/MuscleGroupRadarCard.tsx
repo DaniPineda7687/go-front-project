@@ -21,17 +21,17 @@ import {
 export const description = "A radar chart with muscle groups worked"
 
 const chartData = [
-  { muscleGroup: "Chest", desktop: 186 },
-  { muscleGroup: "Back", desktop: 285 },
-  { muscleGroup: "Legs", desktop: 237 },
-  { muscleGroup: "Shoulders", desktop: 203 },
-  { muscleGroup: "Arms", desktop: 209 },
-  { muscleGroup: "Core", desktop: 264 },
+  { muscleGroup: "Chest", weight: 186 },
+  { muscleGroup: "Back", weight: 285 },
+  { muscleGroup: "Legs", weight: 237 },
+  { muscleGroup: "Shoulders", weight: 203 },
+  { muscleGroup: "Arms", weight: 209 },
+  { muscleGroup: "Core", weight: 264 },
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  weight: {
+    label: "Weight",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
@@ -55,11 +55,11 @@ export function MuscleGroupRadarCard() {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <PolarGrid className="fill-[--color-desktop] opacity-20" />
+            <PolarGrid className="fill-[--color-weight] opacity-20" />
             <PolarAngleAxis dataKey="muscleGroup" />
             <Radar
-              dataKey="desktop"
-              fill="var(--color-desktop)"
+              dataKey="weight"
+              fill="var(--color-weight)"
               fillOpacity={0.5}
             />
           </RadarChart>
