@@ -45,7 +45,7 @@ export function GymAttendanceCard() {
         <CardDescription>Datos de la ultima semana</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} >
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis

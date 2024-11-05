@@ -45,10 +45,9 @@ export function MuscleGroupRadarCard() {
             Mostrando la intensidad para diferentes grupos musculares
         </CardDescription>
       </CardHeader>
-      <CardContent className="pb-0">
+      <CardContent>
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
         >
           <RadarChart data={chartData}>
             <ChartTooltip
