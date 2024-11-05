@@ -29,16 +29,12 @@ const data = {
           isActive: true,
         },
         {
-          title: "Calendario",
-          url: "#",
-        },
-        {
           title: "Habitos",
           url: "/dashboard/habits",
         },
         {
           title: "Ejercicios",
-          url: "#",
+          url: "/dashboard/exercises",
         },
       ],
     },
