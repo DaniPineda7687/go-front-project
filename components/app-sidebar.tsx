@@ -34,7 +34,7 @@ const data = {
         },
         {
           title: "Habitos",
-          url: "#",
+          url: "/dashboard/habits",
         },
         {
           title: "Ejercicios",
