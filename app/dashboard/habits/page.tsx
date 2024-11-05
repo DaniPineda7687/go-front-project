@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button"
 import DoughnutChart from "../components/CicleGraph"
 import BarGraph from "../components/BarGraph"
+import Table from "../components/Table"
 
 // Datos de asistencia simulados
 const attendanceData = {
@@ -42,6 +43,18 @@ const initialGraphData = {
   last_week: 70,
   last_month: 75
 }
+const exerciseData = [
+  { number: 1, name: 'Push-ups', count: 30 },
+  { number: 2, name: 'Squats', count: 20 },
+  { number: 3, name: 'Pull-ups', count: 10 },
+  { number: 4, name: 'Lunges', count: 15 },
+  { number: 5, name: 'Planks', count: 25 },
+  { number: 6, name: 'Burpees', count: 18 },
+  { number: 7, name: 'Sit-ups', count: 22 },
+  { number: 8, name: 'Deadlifts', count: 12 },
+  { number: 9, name: 'Bench Press', count: 14 },
+  { number: 10, name: 'Bicep Curls', count: 16 },
+];
 
 export default function Habits() {
   const [days, setDays] = useState(attendanceData.this_week)
@@ -121,6 +134,9 @@ export default function Habits() {
               </Card>
             ))}
           </div>
+          <hr></hr>
+          <h1 className="text-lg font-semibold">Exercises</h1>
+          <Table data={exerciseData} />
         </div>
       </div>
     </>
