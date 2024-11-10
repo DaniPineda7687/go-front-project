@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { post } from "@/lib/api"; // Asegúrate de que el path sea correcto
 
-export function LoginForm() {
+export function SignUpForm() {
   const router = useRouter();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
@@ -17,29 +18,40 @@ export function LoginForm() {
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     try {
-      const response = await post("/login", { email, password });
+      const response = await post("/register", { username, email, password });
       console.log(response);
-      
-      // Si el login es exitoso, redirige al dashboard
+
+      // Si el registro es exitoso, redirige al dashboard
       if (response.success) {
         router.push("/dashboard");
       } else {
-        setError(response.message || "Login failed");
+        setError(response.message || "Sign up failed");
       }
     } catch (err:any) {
       console.error(err.message);
-      setError('Usuario o contraseña incorrectos');
+      setError('Hubo un problema al registrarse');
     }
   };
 
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>Enter your email below to login to your account</CardDescription>
+        <CardTitle className="text-2xl">Sign Up</CardTitle>
+        <CardDescription>Fill in the details below to create a new account</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              type="text"
+              placeholder="yourusername"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -52,12 +64,7 @@ export function LoginForm() {
             />
           </div>
           <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link>
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               type="password"
@@ -68,13 +75,13 @@ export function LoginForm() {
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button type="submit" className="w-full">
-            Login
+            Sign Up
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="underline">
-            Sign up
+          Already have an account?{" "}
+          <Link href="/login" className="underline">
+            Login
           </Link>
         </div>
       </CardContent>
