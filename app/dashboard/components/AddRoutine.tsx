@@ -71,7 +71,6 @@ const RoutineForm: React.FC<{ onSave?: (routine: Routine) => Promise<void>; onCa
   };
   const handleSaveRoutine = () => {
     console.log("Rutina guardada:", routine);
-    alert("Rutina guardada en la consola");
     if (onSave) {
       onSave(routine);
     }

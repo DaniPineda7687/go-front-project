@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { LoaderProvider } from "@/context/LoaderContext";
+import GlobalLoader from "@/components/GlobalLoader";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -20,15 +22,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <LoaderProvider>
+          <GlobalLoader />
+          {children}
+        </LoaderProvider>
       </body>
     </html>
   );

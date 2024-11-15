@@ -7,27 +7,39 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { get } from "@/lib/api"
 import { useRouter } from "next/navigation";
-const getExercises = async () => {
-  try {
-    const response = await get("/exercise/get")
-    return response.data
-  } catch (error) {
-    console.error("Error fetching exercises:", error)
-    return []
-  }
-}
+import { useLoader } from "@/context/LoaderContext"
 
 export default function ExerciseGallery() {
   const [exercises, setExercises] = useState([])
   const router = useRouter(); 
+  const { showLoader, hideLoader } = useLoader();
   useEffect(() => {
     const fetchExercises = async () => {
-      const data = await getExercises()
-      setExercises(data)
+      showLoader();
+      try {
+        const data = await getExercises()
+        setExercises(data)
+        
+      }
+      finally {
+       hideLoader(); 
+      }
     }
     fetchExercises()
   }, [])
-
+  
+  const getExercises = async () => {
+    showLoader();
+    try {
+      const response = await get("/exercise/get")
+      return response.data
+    } catch (error) {
+      console.error("Error fetching exercises:", error)
+      return []
+    }finally{
+      hideLoader();
+    }
+  }
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-6">

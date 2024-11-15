@@ -1,5 +1,4 @@
-"use client";
-
+'use client';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Importa useRouter
 import { Button } from "@/components/ui/button";
@@ -9,26 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { get, post } from "@/lib/api";
 import RoutineForm from "../components/AddRoutine";
 import { Routine } from "@/entities/Routine";
+import { useLoader } from "@/context/LoaderContext";
 
-const getRoutines = async (): Promise<Routine[]> => {
-  try {
-    const response = await get("/routine/get");
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching routines:", error);
-    return [];
-  }
-};
-
-const createRoutine = async (routine: Routine) => {
-  try {
-    const response = await post("/routine/pos", routine);
-     response.data;
-  } catch (error) {
-    console.error("Error creating routine:", error);
-     null;
-  }
-};
 
 export default function RoutineGallery() {
   const router = useRouter(); // Inicializa useRouter
@@ -36,6 +17,41 @@ export default function RoutineGallery() {
   const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
   const [addingRoutine, setAddingRoutine] = useState(false);
 
+
+
+
+  const { showLoader, hideLoader } = useLoader();
+  const getRoutines = async (): Promise<Routine[]> => {
+    showLoader();
+    try {
+      const response = await get("/routine/get");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching routines:", error);
+      return [];
+    }
+    finally {
+      hideLoader();
+    }
+  };
+  
+  const createRoutine = async (routine: Routine) => {
+    showLoader();
+    try {
+      const response = await post("/routine/pos", routine);
+       response.data;
+        const routines = await getRoutines();
+        setRoutines(routines);
+        setAddingRoutine(!addingRoutine)
+        setSelectedRoutine(null);
+    } catch (error) {
+      console.error("Error creating routine:", error);
+       null;
+    }finally{
+      hideLoader();
+    }
+  };
+  
   useEffect(() => {
     const fetchRoutines = async () => {
       const data = await getRoutines();
