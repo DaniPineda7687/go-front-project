@@ -7,16 +7,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { post } from "@/lib/api"; // Asegúrate de que el path sea correcto
-
+import { useLoader } from "@/context/LoaderContext";
 export function SignUpForm() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
-
+  const { showLoader, hideLoader } = useLoader();
   const handleSubmit = async (e:any) => {
     e.preventDefault();
+    showLoader();
     try {
       const response = await post("/register", { username, email, password });
       console.log(response);
@@ -30,6 +31,8 @@ export function SignUpForm() {
     } catch (err:any) {
       console.error(err.message);
       setError('Hubo un problema al registrarse');
+    }finally{
+      hideLoader();
     }
   };
 

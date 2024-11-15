@@ -5,14 +5,14 @@ import { Exercise } from "@/entities/Exercise";
 import { Routine } from "@/entities/Routine";
 import { WeekDays } from "@/entities/WeekDays";
 
-const RoutineForm: React.FC<{ onSave?: (routine: Routine) => Promise<void>; onCancel?: (active:boolean) => void }> = ({ onSave, onCancel }) => {
+const RoutineForm: React.FC<{ onSave?: (routine: Routine) => Promise<void>; onCancel?: (active:boolean) => void; errorMessage?: string }> = ({ onSave, onCancel,errorMessage }) => {
   const days: WeekDays = weekDaysData ;
   const [routine, setRoutine] = useState<Routine>({
     name: "",
     description: "",
     days: [],
     level: "",
-    source: "predeterminada",
+    source: "personalizada",
   });
   const [exercises, setExercises] = useState<Exercise[]>([]);
 
@@ -82,7 +82,7 @@ const RoutineForm: React.FC<{ onSave?: (routine: Routine) => Promise<void>; onCa
       description: "",
       days: [],
       level: "",
-      source: "predeterminada",
+      source: "personalizada",
     });
     setExercises([]);
     if (onCancel) {
@@ -92,6 +92,11 @@ const RoutineForm: React.FC<{ onSave?: (routine: Routine) => Promise<void>; onCa
   return (
     <div className="p-8 bg-white shadow-lg rounded-lg max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-gray-700">Crear Rutina</h2>
+      {errorMessage && (
+        <div className="mb-4 p-4 text-red-700 bg-red-100 border border-red-400 rounded">
+          {errorMessage}
+        </div>
+      )}
       <form className="space-y-6">
         <div>
           <label className="block font-medium text-gray-700">
@@ -130,7 +135,7 @@ const RoutineForm: React.FC<{ onSave?: (routine: Routine) => Promise<void>; onCa
           </select>
         </div>
 
-        <div>
+        {/* <div>
           <label className="block font-medium text-gray-700">Origen</label>
           <select
             className="mt-1 w-full p-2 border border-gray-300 rounded-md"
@@ -140,7 +145,7 @@ const RoutineForm: React.FC<{ onSave?: (routine: Routine) => Promise<void>; onCa
             <option value="predeterminada">Predeterminada</option>
             <option value="personalizada">Personalizada</option>
           </select>
-        </div>
+        </div> */}
 
         <div className="space-y-4">
           <h3 className="font-semibold text-lg text-gray-700">

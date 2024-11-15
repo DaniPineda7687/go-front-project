@@ -5,6 +5,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 export const get = async (url: string, params = {}) => {
@@ -22,7 +23,7 @@ export const put = async (url: string, data: any) => {
   return response.data;
 };
 
-export const del = async (url: string) => {
-  const response = await api.delete(url);
+export const del = async (url: string, data: any = {}) => {
+  const response = await api.delete(url, { data });
   return response.data;
 };

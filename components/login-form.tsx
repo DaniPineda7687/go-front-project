@@ -7,21 +7,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { post } from "@/lib/api"; // Asegúrate de que el path sea correcto
-
+import { useLoader } from "@/context/LoaderContext";
+import Cookies from "js-cookie";
 export function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
-
+  const { showLoader, hideLoader } = useLoader();
   const handleSubmit = async (e:any) => {
+    showLoader();
     e.preventDefault();
     try {
       const response = await post("/login", { email, password });
       console.log(response);
-      
       // Si el login es exitoso, redirige al dashboard
       if (response.success) {
+        Cookies.set('userId', response.data.Id, { expires: 7 });
         router.push("/dashboard");
       } else {
         setError(response.message || "Login failed");
@@ -29,6 +31,8 @@ export function LoginForm() {
     } catch (err:any) {
       console.error(err.message);
       setError('Usuario o contraseña incorrectos');
+    }finally{
+      hideLoader();
     }
   };
 
