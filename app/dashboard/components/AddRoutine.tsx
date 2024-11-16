@@ -134,7 +134,12 @@ const RoutineForm: React.FC<{
     updatedDays[dayIndex].day = dayValue;
     setRoutine({ ...routine, days: updatedDays });
   };
-
+  const removeSet = (dayIndex: number, exerciseIndex: number, setIndex: number) => {
+    const updatedDays = [...routine.days];
+    updatedDays[dayIndex].exerciseSets[exerciseIndex].sets.splice(setIndex, 1);
+    setRoutine({ ...routine, days: updatedDays });
+  };
+  
   const handleSaveRoutine = () => {
     if (onSave) {
       onSave(routine);
@@ -161,19 +166,17 @@ const RoutineForm: React.FC<{
       {(errorMessage || localError) && (
         <div className="mb-4 p-4 text-red-700 bg-red-100 border border-red-400 rounded relative">
           {localError || errorMessage}
-    {localError && (
-      <button
-        type="button"
-        onClick={() => setLocalError(null)}
-        className="absolute top-1 right-2 text-red-500 hover:text-red-700 font-bold text-xl w-8 h-8 flex items-center justify-center rounded-full bg-red-200 hover:bg-red-300"
-      >
-        ×
-      </button>
-    )}
+          {localError && (
+            <button
+              type="button"
+              onClick={() => setLocalError(null)}
+              className="absolute top-1 right-2 text-red-500 hover:text-red-700 font-bold text-xl w-8 h-8 flex items-center justify-center rounded-full bg-red-200 hover:bg-red-300"
+            >
+              ×
+            </button>
+          )}
         </div>
       )}
-
-
 
       <form className="space-y-6">
         {/* Inputs de rutina */}
@@ -267,7 +270,7 @@ const RoutineForm: React.FC<{
                     value={exerciseSet.exercise._id}
                   >
                     <option value="">Selecciona un ejercicio</option>
-                    {exercises.map((exerciseOption,index) => (
+                    {exercises.map((exerciseOption, index) => (
                       <option key={index} value={exerciseOption._id}>
                         {exerciseOption.title}
                       </option>
@@ -275,7 +278,9 @@ const RoutineForm: React.FC<{
                   </select>
                   {exerciseSet.exercise.title && (
                     <>
-                      <p className="mt-2">Nivel: {exerciseSet.exercise.level}</p>
+                      <p className="mt-2">
+                        Nivel: {exerciseSet.exercise.level}
+                      </p>
                       <img
                         src={exerciseSet.exercise.image}
                         alt={exerciseSet.exercise.title}
@@ -284,15 +289,17 @@ const RoutineForm: React.FC<{
                       <h5 className="font-semibold mt-2 text-gray-700">
                         Músculos trabajados:
                       </h5>
-                      {exerciseSet.exercise.muscles.map((muscle, muscleIndex) => (
-                        <div
-                          key={muscleIndex}
-                          className="flex justify-between mt-1"
-                        >
-                          <span>{muscle.name}</span>
-                          <span>{muscle.percentage}%</span>
-                        </div>
-                      ))}
+                      {exerciseSet.exercise.muscles.map(
+                        (muscle, muscleIndex) => (
+                          <div
+                            key={muscleIndex}
+                            className="flex justify-between mt-1"
+                          >
+                            <span>{muscle.name}</span>
+                            <span>{muscle.percentage}%</span>
+                          </div>
+                        )
+                      )}
                     </>
                   )}
                   <h5 className="font-semibold mt-4 text-gray-700">Series</h5>
@@ -310,13 +317,25 @@ const RoutineForm: React.FC<{
                             dayIndex,
                             exerciseIndex,
                             setIndex,
-                            parseInt(e.target.value===''?'0':e.target.value)
+                            parseInt(
+                              e.target.value === "" ? "0" : e.target.value
+                            )
                           )
                         }
                         className="w-16 p-2 border border-gray-300 rounded-md"
                       />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeSet(dayIndex, exerciseIndex, setIndex)
+                        }
+                        className="text-red-500 hover:underline text-sm"
+                      >
+                        Eliminar Serie
+                      </button>
                     </div>
                   ))}
+
                   <button
                     type="button"
                     onClick={() => addSet(dayIndex, exerciseIndex)}

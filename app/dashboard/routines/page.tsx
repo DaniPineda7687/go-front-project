@@ -56,6 +56,19 @@ export default function RoutineGallery() {
       hideLoader();
     }
   };
+  const getLevelBadgeClass = (level: string) => {
+    switch (level.toLowerCase()) {
+      case "principiante":
+        return "bg-gradient-to-r from-green-400 to-green-600 text-white shadow-lg ring-2 ring-green-500";
+      case "intermedio":
+        return "bg-gradient-to-r from-yellow-400 to-yellow-600 text-white shadow-lg ring-2 ring-yellow-500";
+      case "avanzado":
+        return "bg-gradient-to-r from-red-400 to-red-600 text-white shadow-lg ring-2 ring-red-500";
+      default:
+        return "bg-gray-200 text-gray-800 shadow-md ring-1 ring-gray-400";
+    }
+  };
+
   const deleteRoutine = async (routineId: string) => {
     showLoader();
     try {
@@ -106,7 +119,11 @@ export default function RoutineGallery() {
 
       {addingRoutine ? (
         <RoutineForm
-          onCancel={() => {setAddingRoutine(false);setSelectedRoutine(null);setErrorMessage(null);}}
+          onCancel={() => {
+            setAddingRoutine(false);
+            setSelectedRoutine(null);
+            setErrorMessage(null);
+          }}
           onSave={createRoutine}
           errorMessage={errorMessage}
         />
@@ -128,22 +145,35 @@ export default function RoutineGallery() {
                   <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {defaultRoutines.map((routine) => (
                       <Card
-                        key={routine._id}
-                        onClick={() => setSelectedRoutine(routine)}
-                        className="relative rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300"
-                      >
+                      key={routine._id}
+                      onClick={() => setSelectedRoutine(routine)}
+                      className="relative flex items-center rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300"
+                    >
+                      {/* Contenedor de la imagen */}
+                      <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-white flex items-center justify-center">
+                        <img
+                          src="https://cdn.shopify.com/s/files/1/0463/5803/6638/files/png-transparent-fitness-centre-physical-fitness-logo-work-out-hand-sticker-sports_480x480.png?v=1624498543"
+                          alt="Gym Icon"
+                          className="object-contain w-full h-full"
+                        />
+                      </div>
+                    
+                      {/* Contenido de la tarjeta */}
+                      <div className="flex-grow">
                         <CardContent className="p-4">
-                          <CardTitle className="text-lg font-semibold mb-2">
-                            {routine.name}
-                          </CardTitle>
-                          <Badge variant="outline" className="mb-2">
+                          <CardTitle className="text-lg font-semibold mb-2">{routine.name}</CardTitle>
+                          <Badge
+                            className={`mb-2 px-3 py-1 rounded-full font-semibold text-sm ${getLevelBadgeClass(
+                              routine.level
+                            )}`}
+                          >
                             {routine.level}
                           </Badge>
-                          <p className="text-sm text-muted-foreground">
-                            {routine.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground">{routine.description}</p>
                         </CardContent>
-                      </Card>
+                      </div>
+                    </Card>
+                    
                     ))}
                   </div>
                 ) : (
@@ -161,22 +191,34 @@ export default function RoutineGallery() {
                   <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {customRoutines.map((routine) => (
                       <Card
-                        key={routine._id}
-                        onClick={() => setSelectedRoutine(routine)}
-                        className="relative rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-                      >
+                      key={routine._id}
+                      onClick={() => setSelectedRoutine(routine)}
+                      className="relative flex items-center rounded-lg overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300"
+                    >
+                      {/* Contenedor de la imagen */}
+                      <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-white flex items-center justify-center">
+                        <img
+                          src="https://cdn.shopify.com/s/files/1/0463/5803/6638/files/png-transparent-fitness-centre-physical-fitness-logo-work-out-hand-sticker-sports_480x480.png?v=1624498543"
+                          alt="Gym Icon"
+                          className="object-contain w-full h-full"
+                        />
+                      </div>
+                    
+                      {/* Contenido de la tarjeta */}
+                      <div className="flex-grow">
                         <CardContent className="p-4">
-                          <CardTitle className="text-lg font-semibold mb-2">
-                            {routine.name}
-                          </CardTitle>
-                          <Badge variant="outline" className="mb-2">
+                          <CardTitle className="text-lg font-semibold mb-2">{routine.name}</CardTitle>
+                          <Badge
+                            className={`mb-2 px-3 py-1 rounded-full font-semibold text-sm ${getLevelBadgeClass(
+                              routine.level
+                            )}`}
+                          >
                             {routine.level}
                           </Badge>
-                          <p className="text-sm text-muted-foreground">
-                            {routine.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground">{routine.description}</p>
                         </CardContent>
-                      </Card>
+                      </div>
+                    </Card>
                     ))}
                   </div>
                 ) : (
@@ -254,11 +296,13 @@ export default function RoutineGallery() {
                             {exerciseSet.exercise.title}
                           </h4>
                           <Badge
-                            variant="outline"
-                            className="text-sm bg-gray-100 text-gray-600 mt-2 mb-4 px-3 py-1 rounded-full"
+                            className={`mt-4 px-3 py-1 rounded-full font-semibold text-sm ${getLevelBadgeClass(
+                              exerciseSet.exercise.level
+                            )}`}
                           >
                             {exerciseSet.exercise.level}
                           </Badge>
+
                           <div className="flex flex-wrap gap-2 mb-4">
                             {exerciseSet.exercise.muscles.map((muscle, j) => (
                               <Badge
