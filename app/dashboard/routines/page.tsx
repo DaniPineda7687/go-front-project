@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { get, post,del } from "@/lib/api";
+import { get, post, del } from "@/lib/api";
 import RoutineForm from "../components/AddRoutine";
 import { Routine } from "@/entities/Routine";
 import { useLoader } from "@/context/LoaderContext";
@@ -62,7 +62,9 @@ export default function RoutineGallery() {
       const response = await del("/routine/del", { routine_id: routineId });
       const updatedRoutines = await getRoutines(); // Actualiza la lista de rutinas después de borrar
       setRoutines(updatedRoutines);
-      setErrorMessage(null); // Limpia mensajes de error si la eliminación es exitosa
+      setAddingRoutine(false);
+      setSelectedRoutine(null);
+      setErrorMessage(null);
     } catch (error: any) {
       console.error("Error deleting routine:", error);
       setErrorMessage(
@@ -104,7 +106,7 @@ export default function RoutineGallery() {
 
       {addingRoutine ? (
         <RoutineForm
-          onCancel={() => setAddingRoutine(false)}
+          onCancel={() => {setAddingRoutine(false);setSelectedRoutine(null);setErrorMessage(null);}}
           onSave={createRoutine}
           errorMessage={errorMessage}
         />
@@ -173,15 +175,6 @@ export default function RoutineGallery() {
                           <p className="text-sm text-muted-foreground">
                             {routine.description}
                           </p>
-                          <div className="mt-4 flex justify-end space-x-2">
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => deleteRoutine(routine._id)}
-                            >
-                              Borrar
-                            </Button>
-                          </div>
                         </CardContent>
                       </Card>
                     ))}
@@ -194,51 +187,100 @@ export default function RoutineGallery() {
               </div>
             </div>
           ) : (
-            <div className="p-4 bg-white rounded-lg shadow-md">
-              <Button variant="ghost" onClick={() => setSelectedRoutine(null)}>
-                ← Volver a las rutinas
-              </Button>
-              <h2 className="text-2xl font-bold mt-4 mb-2">
-                {selectedRoutine.name}
-              </h2>
-              <p className="text-muted-foreground mb-4">
-                {selectedRoutine.description}
-              </p>
-              <Badge variant="outline" className="mb-4">
-                {selectedRoutine.level}
-              </Badge>
+            <div className="p-6 bg-white rounded-2xl shadow-lg">
+              {/* Barra superior con botones */}
+              <div className="flex justify-between items-center mb-6">
+                <Button
+                  variant="ghost"
+                  onClick={() => setSelectedRoutine(null)}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
+                >
+                  ← <span>Volver a las rutinas</span>
+                </Button>
+                {selectedRoutine.source === "personalizada" ? (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="bg-red-500 hover:bg-red-600 text-white"
+                    onClick={() => deleteRoutine(selectedRoutine._id)}
+                  >
+                    Borrar
+                  </Button>
+                ) : (
+                  ""
+                )}
+              </div>
 
-              <Separator className="mb-4" />
+              {/* Detalle de la rutina */}
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-bold text-gray-800">
+                  {selectedRoutine.name}
+                </h2>
+                <p className="text-gray-500 text-lg mt-2">
+                  {selectedRoutine.description}
+                </p>
+                <Badge
+                  variant="outline"
+                  className="mt-4 bg-gray-100 text-gray-600 px-3 py-1 rounded-full"
+                >
+                  {selectedRoutine.level}
+                </Badge>
+              </div>
+
+              <Separator className="mb-6" />
+
+              {/* Días y ejercicios */}
+              {/* Días y ejercicios */}
               {selectedRoutine.days.map((day, index) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-xl font-semibold mb-2">{day.day}</h3>
-                  <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-                    {day.exercises.map((exercise, i) => (
+                <div key={index} className="mb-8">
+                  <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                    {day.day}
+                  </h3>
+                  <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                    {day.exerciseSets.map((exerciseSet, i) => (
                       <Card
                         key={i}
-                        className="rounded-lg overflow-hidden shadow-lg"
+                        className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200"
                       >
                         <CardHeader className="p-0">
                           <img
-                            src={exercise.image}
-                            alt={exercise.title}
-                            className="w-full h-56 object-cover"
+                            src={exerciseSet.exercise.image}
+                            alt={exerciseSet.exercise.title}
+                            className="w-full h-48 object-cover"
                           />
                         </CardHeader>
                         <CardContent className="p-4">
-                          <h4 className="font-semibold text-lg">
-                            {exercise.title}
+                          <h4 className="font-semibold text-lg text-gray-800">
+                            {exerciseSet.exercise.title}
                           </h4>
-                          <Badge variant="outline" className="mb-2">
-                            {exercise.level}
+                          <Badge
+                            variant="outline"
+                            className="text-sm bg-gray-100 text-gray-600 mt-2 mb-4 px-3 py-1 rounded-full"
+                          >
+                            {exerciseSet.exercise.level}
                           </Badge>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {exercise.muscles.map((muscle, j) => (
-                              <Badge key={j} variant="outline">
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {exerciseSet.exercise.muscles.map((muscle, j) => (
+                              <Badge
+                                key={j}
+                                variant="outline"
+                                className="text-sm bg-gray-50 text-gray-600 px-2 py-1 rounded"
+                              >
                                 {muscle.name} ({muscle.percentage}%)
                               </Badge>
                             ))}
                           </div>
+                          {/* Sets y Repeticiones */}
+                          <h5 className="text-md font-semibold text-gray-700 mb-2">
+                            Series:
+                          </h5>
+                          <ul className="list-disc list-inside">
+                            {exerciseSet.sets.map((set, k) => (
+                              <li key={k} className="text-sm text-gray-600">
+                                {set.Reps} repeticiones
+                              </li>
+                            ))}
+                          </ul>
                         </CardContent>
                       </Card>
                     ))}
