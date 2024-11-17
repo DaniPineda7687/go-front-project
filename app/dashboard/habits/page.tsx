@@ -1,144 +1,66 @@
-"use client"
+'use client'
+import { useState } from 'react';
+import StatsSummary from '../components/StatsSummary';
+import ProgressChart from '../components/ProgressChart';
 
-import { useState } from "react"
-import { Check, X } from "lucide-react"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import DoughnutChart from "../components/CicleGraph"
-import BarGraph from "../components/BarGraph"
-import Table from "../components/Table"
+const HabitsPage = () => {
+  // Estado inicial para las estadísticas
+  const [statsData, setStatsData] = useState([
+    { label: 'Total de Sesiones', value: 5 },
+    { label: 'Peso Máximo Levantado', value: '50 kg' },
+    { label: 'Total de Repeticiones', value: 75 },
+  ]);
 
-// Datos de asistencia simulados
-const attendanceData = {
-  this_week: [
-    { day: "Monday", attended: true },
-    { day: "Tuesday", attended: false },
-    { day: "Wednesday", attended: true },
-    { day: "Thursday", attended: true },
-    { day: "Friday", attended: false },
-    { day: "Saturday", attended: true },
-    { day: "Sunday", attended: false },
-  ]
-}
-const exercises = [
-  { name: 'Push-ups', count: 30 },
-  { name: 'Squats', count: 20 },
-  { name: 'Pull-ups', count: 10 },
-  { name: 'Lunges', count: 15 },
-  { name: 'Planks', count: 25 },
-  { name: 'Burpees', count: 18 },
-  { name: 'Sit-ups', count: 22 },
-  { name: 'Deadlifts', count: 12 },
-  { name: 'Bench Press', count: 14 },
-  { name: 'Bicep Curls', count: 16 },
-]
-const initialGraphData = {
-  last_week: 70,
-  last_month: 75
-}
-const exerciseData = [
-  { number: 1, name: 'Push-ups', count: 30 },
-  { number: 2, name: 'Squats', count: 20 },
-  { number: 3, name: 'Pull-ups', count: 10 },
-  { number: 4, name: 'Lunges', count: 15 },
-  { number: 5, name: 'Planks', count: 25 },
-  { number: 6, name: 'Burpees', count: 18 },
-  { number: 7, name: 'Sit-ups', count: 22 },
-  { number: 8, name: 'Deadlifts', count: 12 },
-  { number: 9, name: 'Bench Press', count: 14 },
-  { number: 10, name: 'Bicep Curls', count: 16 },
-];
+  // Estado inicial para los datos de los gráficos
+  const [barChartData, setBarChartData] = useState([
+    { exercise: 'Press Banca', weight: 50 },
+    { exercise: 'Sentadilla', weight: 45 },
+    { exercise: 'Peso Muerto', weight: 55 },
+  ]);
 
-export default function Habits() {
-  const [days, setDays] = useState(attendanceData.this_week)
-  const [graphData, setGraphData] = useState({
-    this_week: calculateAttendancePercentage(attendanceData.this_week),
-    ...initialGraphData
-  })
+  const [lineChartData, setLineChartData] = useState([
+    { date: '2024-11-01', repetitions: 30 },
+    { date: '2024-11-05', repetitions: 35 },
+    { date: '2024-11-10', repetitions: 40 },
+  ]);
 
-  function calculateAttendancePercentage(weekData:any) {
-    const attendedDays = weekData.filter((day:any)=> day.attended).length
-    return Math.round((attendedDays / weekData.length) * 100)
-  }
-
-  const toggleAttendance = (index:any) => {
-    const updatedDays = [...days]
-    updatedDays[index].attended = !updatedDays[index].attended
-    setDays(updatedDays)
-    
-    setGraphData(prevGraphData => ({
-      ...prevGraphData,
-      this_week: calculateAttendancePercentage(updatedDays)
-    }))
-  }
+  const [areaChartData, setAreaChartData] = useState([
+    { date: '2024-11-01', weight: 10 },
+    { date: '2024-11-05', weight: 20 },
+    { date: '2024-11-10', weight: 30 },
+    { date: '2024-11-15', weight: 50 },
+  ]);
 
   return (
-    <>
-    <h1 className="text-2xl font-semibold">Habits</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
-        
-        {/* Columna de Gráficos */}
-        <div>
-          <hr />
-          <h2 className="text-lg font-semibold">History Attendance</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 p-4">
-            <DoughnutChart percentage={graphData.this_week} title="Current Week" color="#4caf50" />
-            <DoughnutChart percentage={graphData.last_week} title="Last Week" color="#0683C1" />
-            <DoughnutChart percentage={graphData.last_month} title="Last Month" color="#C8BE04" />
-          </div>
-          <hr />
-          <h2 className="text-lg font-semibold">Top Exercises</h2>
-          <BarGraph data={exercises} />
-        </div>
+    <div className="min-h-screen bg-gray-100 p-4">
+      <header className="text-center py-4">
+        <h1 className="text-3xl font-bold text-gray-800">Progreso de Ejercicios</h1>
+      </header>
 
-        {/* Columna de Asistencias Semanales */}
-        <div>
-          <hr></hr>
-          <h2 className="text-lg font-semibold">Current Week Attendance</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 p-4">
-            {days.map((item, index) => (
-              <Card key={index} className="flex flex-col items-center">
-                <CardHeader className="text-center">
-                  <CardTitle>{item.day}</CardTitle>
-                  <CardDescription>Gym Attendance</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button
-                    variant={item.attended ? "default" : "outline"}
-                    className="w-full"
-                    onClick={() => toggleAttendance(index)}
-                  >
-                    {item.attended ? (
-                      <>
-                        <Check className="mr-2 h-4 w-4 text-green-500" />
-                        Attended
-                      </>
-                    ) : (
-                      <>
-                        <X className="mr-2 h-4 w-4 text-red-500" />
-                        Not Attended
-                      </>
-                    )}
-                  </Button>
-                </CardContent>
-                <CardFooter className="text-xs text-muted-foreground">
-                  Tap to mark attendance
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-          <hr></hr>
-          <h1 className="text-lg font-semibold">Exercises</h1>
-          <Table data={exerciseData} />
-        </div>
-      </div>
-    </>
-  )
-}
+      <main>
+        {/* Resumen de Estadísticas */}
+        <StatsSummary stats={statsData} />
+
+        {/* Gráfico 1: Peso Levantado por Ejercicio */}
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 text-center mt-8">Peso Levantado por Ejercicio</h2>
+          <ProgressChart data={barChartData} type="bar" />
+        </section>
+
+        {/* Gráfico 2: Repeticiones por Sesión */}
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 text-center mt-8">Repeticiones por Sesión</h2>
+          <ProgressChart data={lineChartData} type="line" />
+        </section>
+
+        {/* Gráfico 3: Progresión del Peso Máximo */}
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 text-center mt-8">Progresión del Peso Máximo</h2>
+          <ProgressChart data={areaChartData} type="area" />
+        </section>
+      </main>
+    </div>
+  );
+};
+
+export default HabitsPage;

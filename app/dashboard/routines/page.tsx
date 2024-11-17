@@ -270,67 +270,62 @@ export default function RoutineGallery() {
               </div>
 
               <Separator className="mb-6" />
-
-              {/* Días y ejercicios */}
               {/* Días y ejercicios */}
               {selectedRoutine.days.map((day, index) => (
-                <div key={index} className="mb-8">
-                  <h3 className="text-xl font-semibold text-gray-700 mb-4">
-                    {day.day}
-                  </h3>
-                  <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {day.exerciseSets.map((exerciseSet, i) => (
-                      <Card
-                        key={i}
-                        className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200"
-                      >
-                        <CardHeader className="p-0">
-                          <img
-                            src={exerciseSet.exercise.image}
-                            alt={exerciseSet.exercise.title}
-                            className="w-full h-48 object-cover"
-                          />
-                        </CardHeader>
-                        <CardContent className="p-4">
-                          <h4 className="font-semibold text-lg text-gray-800">
-                            {exerciseSet.exercise.title}
-                          </h4>
-                          <Badge
-                            className={`mt-4 px-3 py-1 rounded-full font-semibold text-sm ${getLevelBadgeClass(
-                              exerciseSet.exercise.level
-                            )}`}
-                          >
-                            {exerciseSet.exercise.level}
-                          </Badge>
-
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {exerciseSet.exercise.muscles.map((muscle, j) => (
-                              <Badge
-                                key={j}
-                                variant="outline"
-                                className="text-sm bg-gray-50 text-gray-600 px-2 py-1 rounded"
-                              >
-                                {muscle.name} ({muscle.percentage}%)
-                              </Badge>
-                            ))}
-                          </div>
-                          {/* Sets y Repeticiones */}
-                          <h5 className="text-md font-semibold text-gray-700 mb-2">
-                            Series:
-                          </h5>
-                          <ul className="list-disc list-inside">
-                            {exerciseSet.sets.map((set, k) => (
-                              <li key={k} className="text-sm text-gray-600">
-                                {set.Reps} repeticiones
-                              </li>
-                            ))}
-                          </ul>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
+  <div key={index} className="mb-8">
+    <h3 className="text-xl font-semibold text-gray-700 mb-4">{day.day}</h3>
+    <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      {day.exerciseSets.map((exerciseSet, i) => (
+        <Card key={i} className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
+          <CardHeader className="p-0">
+            <img
+              src={exerciseSet.exercise.image}
+              alt={exerciseSet.exercise.title}
+              className="w-full h-48 object-cover"
+            />
+          </CardHeader>
+          <CardContent className="p-4">
+            <h4 className="font-semibold text-lg text-gray-800">{exerciseSet.exercise.title}</h4>
+            <Badge
+              className={`mt-4 px-3 py-1 rounded-full font-semibold text-sm ${getLevelBadgeClass(
+                exerciseSet.exercise.level
+              )}`}
+            >
+              {exerciseSet.exercise.level}
+            </Badge>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {exerciseSet.exercise.muscles.map((muscle, j) => (
+                <Badge
+                  key={j}
+                  variant="outline"
+                  className="text-sm bg-gray-50 text-gray-600 px-2 py-1 rounded"
+                >
+                  {muscle.name} ({muscle.percentage}%)
+                </Badge>
               ))}
+            </div>
+            <h5 className="text-md font-semibold text-gray-700 mb-2">Series:</h5>
+            <ul className="list-disc list-inside">
+              {exerciseSet.sets.map((set, k) => (
+                <li key={k} className="text-sm text-gray-600">{set.Reps} repeticiones</li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+    {/* Botón para redirigir */}
+    <button
+      className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+      onClick={() => {
+        sessionStorage.setItem("selectedExerciseSets", JSON.stringify(day.exerciseSets));
+        router.push("/dashboard/train/workout");
+      }}
+    >
+      Entrenar
+    </button>
+  </div>
+))}
             </div>
           )}
         </div>

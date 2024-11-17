@@ -24,6 +24,7 @@ export function LoginForm() {
       // Si el login es exitoso, redirige al dashboard
       if (response.success) {
         Cookies.set('userId', response.data.Id, { expires: 7 });
+        Cookies.set('username', response.data.Username, { expires: 7 });
         router.push("/dashboard");
       } else {
         setError(response.message || "Login failed");

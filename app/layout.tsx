@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { LoaderProvider } from "@/context/LoaderContext";
+import {AlertProvider} from "@/context/AlertContext";
+import Alert from "@/components/Alert";
 import GlobalLoader from "@/components/GlobalLoader";
 import "./globals.css";
 
@@ -28,9 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <LoaderProvider>
-          <GlobalLoader />
-          {children}
+      <LoaderProvider>
+          <AlertProvider>
+            {children}
+            <GlobalLoader />
+            <Alert />
+          </AlertProvider>
         </LoaderProvider>
       </body>
     </html>
