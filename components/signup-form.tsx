@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { post } from "@/lib/api"; // Asegúrate de que el path sea correcto
 import { useLoader } from "@/context/LoaderContext";
+import Cookies from "js-cookie";
 export function SignUpForm() {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -24,6 +25,8 @@ export function SignUpForm() {
 
       // Si el registro es exitoso, redirige al dashboard
       if (response.success) {
+        Cookies.set('userId', response.data.Id, { expires: 7 });
+        Cookies.set('username', response.data.Username, { expires: 7 });
         router.push("/dashboard");
       } else {
         setError(response.message || "Sign up failed");

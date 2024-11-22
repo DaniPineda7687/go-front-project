@@ -33,7 +33,11 @@ const data = {
           url: "/dashboard/habits",
         },
         {
-          title: "Ejercicios",
+          title: "Metas",
+          url: "/dashboard/goals",
+        },
+        {
+          title: "Ejercicios / Rutinas",
           url: "/dashboard/exercises",
         },
       ],

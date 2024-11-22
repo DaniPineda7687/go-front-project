@@ -66,8 +66,8 @@ const ProgressPage = () => {
           get("/workout/get"),
           get("/exercise/get"),
         ]);
-        const workouts: Workout[] = workoutsResponse.data;
-        const exercises: Exercise[] = exercisesResponse.data;
+        const workouts: Workout[] = workoutsResponse.data || [];
+        const exercises: Exercise[] = exercisesResponse.data || [];
         const uniqueDates = new Set(workouts.map(workout => new Date(workout.workout_date).toISOString().split('T')[0]));
         const daysAttended = uniqueDates.size;
         setDiasAsistidos(daysAttended);
@@ -84,7 +84,11 @@ const ProgressPage = () => {
           console.log(minutes);
           promedio.push(minutes);
         });
-        setTiempoPromedioEntreno(`${Math.round(promedio.reduce((a, b) => a + b, 0) / promedio.length)}m`);
+        if(promedio.length === 0) {
+          setTiempoPromedioEntreno('0m');
+        }else{
+          setTiempoPromedioEntreno(`${Math.round(promedio.reduce((a, b) => a + b, 0) / promedio.length)}m`);
+        }
         const formattedData = transformWorkoutsToDummyData(workouts, exercises);
         setExercises(exercises);
         setFormattedData(formattedData);
